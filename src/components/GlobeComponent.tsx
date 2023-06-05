@@ -1,4 +1,4 @@
-// src/components/GlobeComponent.tsx
+// src/components/GraphComponent.tsx
 import React, { useEffect, useRef, useState } from 'react';
 import Globe from 'react-globe.gl';
 import { GeoJSON } from 'geojson';
@@ -11,6 +11,7 @@ interface CountryFeature {
     featurecla: string;
     refugeeCount: null | number;
     refugeeDisplay: null | string;
+    info: string[] | null;
     LABELRANK: number;
     SOVEREIGNT: string;
     SOV_A3: string;
@@ -96,17 +97,33 @@ interface GlobeComponentProps {
   countries: CountriesFeatureCollection;
   altitude: number;
   transitionDuration: number;
+  setHoveredCountry: any;
 }
 
-const GlobeComponent: React.FC<GlobeComponentProps> = ({ countries, altitude, transitionDuration}) => {
+const GlobeComponent: React.FC<GlobeComponentProps> = ({ countries, altitude, transitionDuration, setHoveredCountry }) => {
   const globeEl = useRef<Globe>(null);
-  const colorScale = d3.scaleSequentialSqrt(d3.interpolateYlOrRd);
+  // const colorScale = d3.scaleSequentialSqrt(d3.interpolateYlOrRd);
   const getVal = feat => feat.properties.GDP_MD_EST / Math.max(1e5, feat.properties.POP_EST);
+  
+
+  const colorScale = d3.scaleSequential()
+  .domain([0, d3.max(countries.features, getVal)])
+  .interpolator((t) => d3.color(d3.interpolateYlOrRd(t)).darker(0.3).toString());
+
+    // const colorScale = d3.scaleSequential()
+  // .domain([0, d3.max(countries.features, getVal)])
+  // .interpolator(d3.interpolateViridis);
+
   const [hoverD, setHoverD] = useState();
+
+  const handleHover = (d: CountryFeature | null) => {
+    setHoverD(d);
+    setHoveredCountry(d);
+  };
 
   const getColor = (feat: CountryFeature) => {
     if (feat === hoverD) {
-      return 'steelblue';
+      return 'rgb(70, 130, 180)';
     }
     
     if (feat.properties.refugeeCount){
@@ -119,7 +136,7 @@ const GlobeComponent: React.FC<GlobeComponentProps> = ({ countries, altitude, tr
   
   const getSideColor = (feat: CountryFeature) => {
     if (feat === hoverD) {
-      return 'rgba(0, 0, 0, 0)';
+      return 'rgba(70, 130, 180, 0.)';
     }
     
     if (feat.properties.refugeeCount){
@@ -136,12 +153,19 @@ const GlobeComponent: React.FC<GlobeComponentProps> = ({ countries, altitude, tr
   }, [globeEl]);
 
   const globeImageUrl = './assets/water_16k.png';
+  const w = window.innerWidth;
+
   return (
+    <div className="globe-wrapper" style={{ width: w }}>
+
     <Globe
+      width={w}
+      style={{ width: w }}
       ref={globeEl}
     //   globeImageUrl="//shadedrelief.com/natural3/ne3_data/16200/masks/water_16k.png"
       globeImageUrl={globeImageUrl}
-      backgroundColor="rgb(252,252,246)"
+      // backgroundColor="rgb(252,252,246)"
+      backgroundColor="rgba(0,0,0,0)"
       showAtmosphere={false}
     
     //   backgroundImageUrl="//unpkg.com/three-globe/example/img/night-sky.png"
@@ -159,8 +183,10 @@ const GlobeComponent: React.FC<GlobeComponentProps> = ({ countries, altitude, tr
           </div>
       `}
       polygonsTransitionDuration={transitionDuration}
-      nPolygonHover={setHoverD}
+      onPolygonHover={handleHover}
     />
+    </div>
+
   );
 };
 
