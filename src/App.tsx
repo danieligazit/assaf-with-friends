@@ -5,6 +5,7 @@ import {GlobeComponent, CountryFeature, CountriesFeatureCollection } from './com
 import Sidebar from "./components/Sidebar";
 import { Grid } from '@mui/material';
 
+const geojsonURL = new URL('./assets/ne_110m_admin_0_countries.geojson', import.meta.url).href
 
 function App() {
   const [countriesData, setCountriesData] = useState<CountriesFeatureCollection>({ type: "FeatureCollection", features: [] });
@@ -13,7 +14,7 @@ function App() {
   const [selectedCountry, setSelectedCountry] = useState<CountryFeature | null>(null);
   
   useEffect(() => {
-    fetch('./datasets/ne_110m_admin_0_countries.geojson').then(res => res.json())
+    fetch(geojsonURL).then(res => res.json())
       .then((countries: CountriesFeatureCollection) => {
         const enrichedCountries = countries.features
           .map((feature: CountryFeature) => {

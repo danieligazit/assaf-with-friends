@@ -4,6 +4,8 @@ import Globe from 'react-globe.gl';
 import { GeoJSON } from 'geojson';
 import * as d3 from 'd3'
 
+const globeImageUrl = new URL('../images/water_16k.png', import.meta.url).href
+
 interface CountryFeature {
   type: "Feature";
   properties: {
@@ -154,7 +156,7 @@ const GlobeComponent: React.FC<GlobeComponentProps> = ({ countries, altitude, tr
     }
   }, [globeEl]);
 
-  const globeImageUrl = './assets/water_16k.png';
+  // const globeImageUrl = './public/water_16k.png';
   const w = window.innerWidth;
 
   return (
