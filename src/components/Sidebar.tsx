@@ -1,29 +1,29 @@
 import React from "react";
-import { CountryFeature } from "./types";
+import { CountryFeature } from "./GlobeComponent";
 import "./Sidebar.css";
 
 interface SidebarProps {
-  hoveredCountry: CountryFeature | null;
+  selectedCountry: CountryFeature | null;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ hoveredCountry }) => {
+const Sidebar: React.FC<SidebarProps> = ({ selectedCountry }) => {
   return (
   
     <div className="sidebar">
-      {hoveredCountry && hoveredCountry.properties.refugeeCountDisplay ? (
+      {selectedCountry && selectedCountry.properties.refugeeCountDisplay ? (
         <>
-          <h2>{hoveredCountry.properties.ADMIN}</h2>
+          <h2>{selectedCountry.properties.ADMIN}</h2>
           <p>
-            Population: {Math.round(+hoveredCountry.properties.POP_EST / 1e4) / 1e2}M
+            Population: {Math.round(+selectedCountry.properties.POP_EST / 1e4) / 1e2}M
           </p>
-          {hoveredCountry.properties.refugeeCountDisplay && (
+          {selectedCountry.properties.refugeeCountDisplay && (
             <p >
-              Asylum Seekers in Israel: {hoveredCountry.properties.refugeeCountDisplay}
+              Asylum Seekers in Israel: {selectedCountry.properties.refugeeCountDisplay}
             </p>
           )}
 
 
-          {hoveredCountry.properties.info && hoveredCountry.properties.info.map((item: string) => {
+          {selectedCountry.properties.info && selectedCountry.properties.info.map((item: string) => {
               return (
               <p>
                 {item}

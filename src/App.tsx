@@ -1,5 +1,5 @@
 // src/App.tsx
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import {GlobeComponent, CountryFeature, CountriesFeatureCollection } from './components/GlobeComponent';
 import Sidebar from "./components/Sidebar";
@@ -10,8 +10,8 @@ function App() {
   const [countriesData, setCountriesData] = useState<CountriesFeatureCollection>({ type: "FeatureCollection", features: [] });
   const [altitude, setAltitude] = useState(0.1);
   const [transitionDuration, setTransitionDuration] = useState(1000);
-  const [hoveredCountry, setHoveredCountry] = useState<CountryFeature | null>(null);
-
+  const [selectedCountry, setSelectedCountry] = useState<CountryFeature | null>(null);
+  
   useEffect(() => {
     fetch('./datasets/ne_110m_admin_0_countries.geojson').then(res => res.json())
       .then((countries: CountriesFeatureCollection) => {
@@ -60,7 +60,7 @@ function App() {
           setTransitionDuration(1900);
           setAltitude(() => (feat: CountryFeature) => {
             if (feat.properties.refugeeCount ) {
-              return 0.1 + feat.properties.refugeeCount /10000 * 0.1;
+              return 0.1 + feat.properties.refugeeCount /10000 * 0.1 + (Math.random()- 0.5) * 0.03;
             }
 
             return 0.03 + (Math.random()- 0.5) * 0.03;
@@ -74,7 +74,7 @@ function App() {
     <Grid container spacing={0} className="grid-container">
       
       <Grid item xs={12} md={3.5} className="sidebar">
-        <Sidebar hoveredCountry={hoveredCountry} />
+        <Sidebar selectedCountry={selectedCountry} />
       </Grid>
       <Grid item xs={12} md={8.5} className="main">
         <div className="globe-container">
@@ -82,8 +82,8 @@ function App() {
             countries={countriesData} 
             altitude={altitude} 
             transitionDuration={transitionDuration} 
-            setHoveredCountry={setHoveredCountry}
             className="globe"
+            setSelectedCountry={setSelectedCountry}
           />
         </div>
       </Grid>

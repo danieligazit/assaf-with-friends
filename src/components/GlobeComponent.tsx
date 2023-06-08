@@ -98,9 +98,10 @@ interface GlobeComponentProps {
   altitude: number;
   transitionDuration: number;
   setHoveredCountry: any;
+  setSelectedCountry: any;
 }
 
-const GlobeComponent: React.FC<GlobeComponentProps> = ({ countries, altitude, transitionDuration, setHoveredCountry }) => {
+const GlobeComponent: React.FC<GlobeComponentProps> = ({ countries, altitude, transitionDuration, setSelectedCountry }) => {
   const globeEl = useRef<Globe>(null);
   // const colorScale = d3.scaleSequentialSqrt(d3.interpolateYlOrRd);
   const getVal = feat => feat.properties.GDP_MD_EST / Math.max(1e5, feat.properties.POP_EST);
@@ -118,8 +119,9 @@ const GlobeComponent: React.FC<GlobeComponentProps> = ({ countries, altitude, tr
 
   const handleHover = (d: CountryFeature | null) => {
     setHoverD(d);
-    setHoveredCountry(d);
+    setSelectedCountry(d);
   };
+
 
   const getColor = (feat: CountryFeature) => {
     if (feat === hoverD) {
@@ -190,4 +192,4 @@ const GlobeComponent: React.FC<GlobeComponentProps> = ({ countries, altitude, tr
   );
 };
 
-export {GlobeComponent, CountryFeature, CountriesFeatureCollection};
+export {GlobeComponent};
